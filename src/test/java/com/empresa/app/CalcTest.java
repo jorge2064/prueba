@@ -7,7 +7,7 @@ public class CalcTest {
     @Test
     void suma_funciona() {
         Calc calc = new Calc();
-        assertEquals(7, calc.suma(3, 4));
+        assertEquals(8, calc.suma(3, 4));
     }
 
     @Test
