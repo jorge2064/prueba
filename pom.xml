@@ -1,7 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.empresa.app</groupId>
@@ -16,9 +15,24 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.release>17</maven.compiler.release>
     <junit.jupiter.version>5.10.2</junit.jupiter.version>
+    <cucumber.version>7.16.1</cucumber.version>
   </properties>
 
   <dependencies>
+    <!-- Cucumber JVM -->
+    <dependency>
+      <groupId>io.cucumber</groupId>
+      <artifactId>cucumber-java</artifactId>
+      <version>${cucumber.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.cucumber</groupId>
+      <artifactId>cucumber-junit-platform-engine</artifactId>
+      <version>${cucumber.version}</version>
+      <scope>test</scope>
+    </dependency>
+
     <!-- JUnit 5 -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -30,13 +44,34 @@
 
   <build>
     <plugins>
-      <!-- Plugin para ejecutar tests con JUnit 5 -->
+      <!-- Compilador -->
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.11.0</version>
+        <configuration>
+          <release>${maven.compiler.release}</release>
+        </configuration>
+      </plugin>
+
+      <!-- Ejecuta Cucumber + genera HTML y JSON nativos en target/ -->
+      <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.2.5</version>
         <configuration>
           <useModulePath>false</useModulePath>
+          <testFailureIgnore>false</testFailureIgnore>
+          <argLine>-Dfile.encoding=UTF-8</argLine>
+          <systemPropertyVariables>
+            <!-- Reportes nativos de Cucumber -->
+            <cucumber.plugin>
+              pretty,summary,
+              html:${project.build.directory}/cucumber-report.html,
+              json:${project.build.directory}/cucumber.json
+            </cucumber.plugin>
+            <!-- Ubicaciones -->
+            <cucumber.glue>stepdefs,com.empresa.app</cucumber.glue>
+            <cucumber.features>classpath:features</cucumber.features>
+          </systemPropertyVariables>
         </configuration>
       </plugin>
     </plugins>
