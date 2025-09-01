@@ -4,10 +4,10 @@ Feature: Login de usuario
   Para acceder a mis funcionalidades
 
   Background:
-    Given existe un usuario "alice" con contraseña "secret"
+    Given existe un usuario "pedro" con contraseña "1234"
 
   Scenario: Login exitoso con credenciales válidas
-    When intento iniciar sesión con usuario "alice" y contraseña "secret"
+    When intento iniciar sesión con usuario "pedro" y contraseña "1234"
     Then el resultado del inicio de sesión debe ser "exitoso"
 
   Scenario Outline: Login fallido con credenciales inválidas
@@ -16,6 +16,6 @@ Feature: Login de usuario
 
     Examples:
       | usuario | clave   |
-      | pedro   | 1234    |
+      | miguel  | loro    |
       | manuel  | perro   |
       | samuel  | gato    |
