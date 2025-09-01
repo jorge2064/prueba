@@ -76,3 +76,86 @@ jobs:
 - Instala JDK 17
 - Ejecuta `mvn clean test`
 - 
+Actividad 2 – BDD, Reportes y Performance
+Sesión Three Amigos (simulada)
+
+PO: define valor de negocio.
+
+QA: criterios de aceptación y ejemplos.
+
+Dev: factibilidad técnica.
+
+Historia de usuario: Como usuario quiero iniciar sesión con credenciales válidas para acceder a mi cuenta.
+
+Criterios de aceptación:
+
+Credenciales correctas ⇒ login exitoso.
+
+Credenciales inválidas ⇒ login fallido.
+
+Mensaje genérico en caso de error.
+
+Escenarios BDD en Gherkin
+
+Archivo: src/test/resources/features/login.feature
+
+Característica: Login de usuario
+Antecedentes:
+Dado existe un usuario "alice" con contraseña "secret"
+
+Escenario: Login exitoso con credenciales válidas
+Cuando intento iniciar sesión con usuario "alice" y contraseña "secret"
+Entonces el resultado del inicio de sesión debe ser "exitoso"
+
+Esquema del escenario: Login fallido con credenciales inválidas
+Cuando intento iniciar sesión con usuario "<usuario>" y contraseña "<contraseña>"
+Entonces el resultado del inicio de sesión debe ser "fallido"
+
+    Ejemplos:
+      | usuario | contraseña |
+      | pedro   | 1234       |
+      | manuel  | perro      |
+      | samuel  | gato       |
+
+Step Definitions y Servicio
+
+LoginSteps.java: implementa los pasos de Cucumber.
+
+AuthService.java: servicio simulado que valida credenciales (alice/secret).
+
+Reportes BDD
+
+Archivos generados:
+
+HTML navegable: target/cucumber-report.html
+
+JSON: target/cucumber.json
+
+Pipeline CI (rama act2)
+Prueba de Performance (k6)
+
+Script: k6/login_smoke.js
+
+import http from "k6/http";
+import { check, sleep } from "k6";
+
+export const options = {
+vus: 2,
+duration: "10s",
+thresholds: {
+http_req_failed: ["rate<0.01"],
+http_req_duration: ["p(95)<800"],
+},
+};
+
+export default function () {
+const res = http.get("https://test.k6.io/");
+check(res, { "status is 200": (r) => r.status === 200 });
+sleep(1);
+}
+El Job Summary en Actions actúa como un mini-dashboard, mostrando:
+
+
+Conclusiones
+
+El proyecto evolucionó desde pruebas unitarias básicas hasta escenarios BDD integrados en un pipeline de CI/CD, incluyendo reportes navegables y métricas de performance. Esto permite asegurar calidad, trazabilidad y confiabilidad en el desarrollo de software.
